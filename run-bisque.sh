@@ -13,8 +13,6 @@ if [ ! -d ${reports} ]; then
     mkdir -p ${reports}
 fi
 
-
-
 echo "In " $(pwd) "BISQUE in" $BQHOME "Reports in" $reports
 cd $BQHOME
 

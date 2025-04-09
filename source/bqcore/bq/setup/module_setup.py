@@ -283,6 +283,7 @@ def docker_setup (image, command, base_image=None, params=None):
         return
     image = docker_params.get ('docker.image')
     docker_hub = docker_params.get('docker.hub', '')
+    #print docker hub ! 
     docker_user = docker_params.get ('docker.hub.user', '')
     docker_pass = docker_params.get('docker.hub.password', '')
     docker_email = docker_params.get('docker.hub.email', '')

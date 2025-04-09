@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: bqflow-module-template
+spec:
+  entrypoint: bqmodule-template
+  serviceAccountName: argo
+  templates:
+    - name: bqmodule-template
+      retryStrategy:
+        limit: "3"
+        retryPolicy: "Always"
+      inputs:
+        parameters:
+          - name: image
+          - name: args
+            #add gpus here
+            #nodeSelector:
+            # app-node: bisque
+      container:
+        image: "{{inputs.parameters.image}}"
+        command: ["/bin/bash", "-c"]
+        args: ["{{inputs.parameters.args}}"]
+  ttlStrategy:
+    secondsAfterCompletion: 86400  # Time to live after workflow is completed, replaces ttlSecondsAfterFinished
+    secondsAfterSuccess: 86400     # Time to live after workflow is successful
+    secondsAfterFailure: 86400     # Time to live after workflow fails

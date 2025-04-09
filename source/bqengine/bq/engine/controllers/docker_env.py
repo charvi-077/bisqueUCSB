@@ -22,7 +22,9 @@ mex=$(echo "$MEX_ID" | tr '[:upper:]' '[:lower:]')
 
 echo "image: ${DOCKER_IMAGE}" | tee params.yaml
 echo "args: ${@}" | tee -a params.yaml
-argo submit --log --from workflowtemplate/bqflow-module-template --parameter-file params.yaml --token $ARGO_TOKEN --generate-name ${mex}- 
+kubectl apply -n argo  -f /source/argo-workflows/module-workflow.yaml 
+export ARGO_TOKEN=$(kubectl get secret default.service-account-token -n argo -o jsonpath='{.data.token}' | base64 --decode)
+argo submit -n argo --log --from workflowtemplate/bqflow-module-template --parameter-file params.yaml --token $ARGO_TOKEN --generate-name ${mex}- 
 """
 
 DOCKER_RUN_GPU="""#!/bin/bash 
@@ -32,7 +34,7 @@ mex=$(echo "$MEX_ID" | tr '[:upper:]' '[:lower:]')
  
 echo "image: ${DOCKER_IMAGE}" | tee params.yaml 
 echo "args: ${@}" | tee -a params.yaml 
-argo submit --log --from workflowtemplate/bqflow-module-gpu-template --parameter-file params.yaml --token $ARGO_TOKEN --generate-name ${mex}-  
+argo submit -n argo --log --from workflowtemplate/bqflow-module-gpu-template --parameter-file params.yaml --token $ARGO_TOKEN --generate-name ${mex}-  
 """
 
 class DockerEnvironment(BaseEnvironment):
@@ -54,6 +56,7 @@ class DockerEnvironment(BaseEnvironment):
 
     '''
 
+    
     name = "Docker"
     config = { }
     matlab_launcher = ""
@@ -65,8 +68,9 @@ class DockerEnvironment(BaseEnvironment):
         runner.load_section ('docker', runner.bisque_cfg)
         runner.load_section ('docker', runner.module_cfg)
         self.enabled = asbool(runner.config.get ('docker.enabled', False))
-        self.module_exec_env = runner.config.get('exec_env', '')
-        log.debug('module exection environment %s', self.module_exec_env)
+        # self.module_exec_env = runner.config.get('exec_env', '')
+        # self.module_workflow_engine = runner.config.get('workflow_engine', "docker")
+        # log.debug('module exection environment %s', self.module_exec_env)
 
         #self.docker_hub = runner.config.get('docker.hub', '')
         #self.docker_image = runner.config.get('docker.image', '')
@@ -133,7 +137,7 @@ class DockerEnvironment(BaseEnvironment):
                         docker_inputs.append (p)
 
             docker = self.create_docker_launcher(mex.rundir, mex.mex_id,
-                                                 docker_image, docker_login, docker_pull, docker_inputs, docker_outputs, self.module_exec_env)
+                                                 docker_image, docker_login, docker_pull, docker_inputs, docker_outputs)
             if mex.executable:
                 mex.executable.insert(0, docker)
                 #mex.files = ",".join (docker_inputs)
@@ -148,13 +152,9 @@ class DockerEnvironment(BaseEnvironment):
                                docker_login,
                                docker_pull,
                                docker_inputs,
-                               docker_outputs,
-                               module_exec_env):
-        if module_exec_env=='use_gpu':
-            log.info('executing module on gpu %s', module_exec_env)
-            docker_run = DOCKER_RUN_GPU
-        else:
-            docker_run = DOCKER_RUN
+                               docker_outputs):
+
+        docker_run = DOCKER_RUN
         #if self.matlab_launcher and os.path.exists(self.matlab_launcher):
         #    matlab_launcher = open(self.matlab_launcher).read()
         content = string.Template(docker_run)
