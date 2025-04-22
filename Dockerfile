@@ -161,11 +161,11 @@ RUN /builder/virtualenv.sh
 # ENV PY_INDEX=https://biodev.ece.ucsb.edu/py/bisque/xenial/+simple
 
 # Set custom Python package index and configure pip
-ENV PY_INDEX=http://vat.ece.ucsb.edu:3141/bisque/xenial/+simple/
+ENV PY_INDEX=http://vat.ece.ucsb.edu:3141/bisque/xenial/+simple
 RUN mkdir -p /root/.pip && echo "\
 [global]\n\
 index-url = $PY_INDEX\n\
-trusted-host = biodev.ece.ucsb.edu\n" > /root/.pip/pip.conf
+trusted-host = vat.ece.ucsb.edu\n" > /root/.pip/pip.conf
 
 # # Install certifi for updated CA certificates
 # RUN pip install certif
