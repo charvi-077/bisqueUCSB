@@ -1564,10 +1564,11 @@ Ext.define('BQ.viewer.Volume.Panel', {
 			var z = this.dims.t;
 			this.dims.t = this.dims.slice.z;
 			this.dims.slice.z = z;
-			slice = 'slice=,,,,';
+			// slice = 'slice=,,,,';
 			this.dims.timeSeries = true;
 		} else {
-			slice = 'slice=,,,1';
+			// slice = 'slice=,,,1';
+			// slice = 'slice=,,,' + (this.currentTime + 1);
             if(this.dims.t === 1)
                 this.useAnimation = false;
         }
@@ -1772,6 +1773,8 @@ Ext.define('BQ.viewer.Volume.Panel', {
 		else {
 			if (this.currentTime != time) {
 				this.currentTime = time;
+				// this.wipeTextureTimeBuffer();
+				// this.updateTextureUniform();
 				this.needs_update();
 				this.fireEvent('time', this);
 			}
@@ -2369,13 +2372,10 @@ VolumeTime.prototype.onTime = function () {
 
 VolumeTime.prototype.addCommand = function (command, pars) {
 
-	if (this.volume.dims)
-		if (this.volume.dims.timeSeries)
-			command.push('slice=,,,,');
-		else {
-			var t = this.volume.currentTime + 1;
-			command.push('slice=,,,' + (t > 0 ? t : ''));
-		}
+	if (this.volume.dims) {
+        var t = this.volume.currentTime + 1;
+        // command.push('slice=,,,' + (t > 0 ? t : ''));
+    }
 };
 
 function VolumeAtlas(volume) {
