@@ -18,7 +18,7 @@ def test_load (session):
     #passwd = config.get ('host.password')
     #bq = BQSession()
     #bq.init_local (user, passwd, bisque_root = host, create_mex = False)
-    x = session.load ('/data_service/image/?limit=10')
+    x = session.load ('/data_service/image/?limit=10') # TODO : how the image is loaded onto the bisque ! 
     print "loading /data_service/images->", BQFactory.to_string((x))
 
 

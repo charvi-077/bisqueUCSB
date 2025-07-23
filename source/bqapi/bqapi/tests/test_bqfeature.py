@@ -48,7 +48,7 @@ def setUp():
 
     store_local_location = config.get('Store', 'local_location') or 'SampleData'
     filename1 = config.get('Store','filename1') or None
-    if filename1 is None: raise NameError('Requre an image to run test properly')
+    if filename1 is None: raise NameError('Requre an image to run test properly') # TODO: put this file on bisque local host and fetch from there
     file1_location = fetch_file(filename1, store_location, store_local_location)
 
     FeatureResource = namedtuple('FeatureResource',['image','mask','gobject'])
@@ -78,7 +78,7 @@ def test_bqfeature_fetch_1():
         Test feature fetch and returning hdf5 file
     """
     filename = 'bqfeature_fetch_1.h5'
-    path = os.path.join(results_location, filename)
+    path = os.path.join(results_location, filename) # TODO this requries the hdf5 file to be created
     filename = Feature().fetch(bqsession, 'SimpleTestFeature', resource_list, path=path)
 
 

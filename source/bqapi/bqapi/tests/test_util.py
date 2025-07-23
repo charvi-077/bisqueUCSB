@@ -29,7 +29,7 @@ def image_uri(session, stores):
         uploads an image
     """
     resource = etree.Element ('resource', name=u'%s/%s'%(TEST_PATH, stores.files[0].name))
-    content = bqsession.postblob(store.files[0].location, xml=resource)
+    content = bqsession.postblob(store.files[0].location, xml=resource) #TODO : store should be passed it , we need to save xml I guess
     return etree.XML(content)[0].attrib['uri']
 
 
@@ -139,7 +139,7 @@ def test_saveblob_1(session,stores):
         Saves an image to the blob service
     """
     try:
-        result = save_blob(bqsession, localfile=stores.files[0].location)
+        result = save_blob(bqsession, localfile=stores.files[0].location) # TODO : requires the same file to be uploaded 
     except BQCommError, e:
         assert False, 'BQCommError: Status: %s'%e.status
     if result is None:

@@ -32,7 +32,7 @@ def check_response(session, request, response_code, xml=None, method='GET'):
         else:
             xml = session.postxml(request, xml, method=method)
     except BQCommError as e:
-        assert(e.status == response_code)
+        assert(e.response.status_code == response_code)
     else:
         assert(200 == response_code)
 
@@ -59,7 +59,7 @@ def check_feature(ns, test, feature_name, image=None, mask=None, gobject=None):
         temp_response_path = ns.session.c.fetch(request, headers={'Content-Type':'text/xml', 'Accept':'text/xml'}, path=temp_response_path)
         #temp_response_path = ns.session.postxml(request, xml=None, method='GET', path=temp_response_path)
     except BQCommError as e:
-        assert(e.status == 200)
+        assert(e.response.status_code == 200)
     else:
         #check the hdf file for status of each request
         with tables.open_file(temp_response_path, 'r') as temp:
@@ -135,7 +135,7 @@ def parallel_check_feature(ns, test, feature_name, image):
         if hasattr(bqfeatures, 'exception'):
             raise bqfeatures.exception
     except BQCommError as e:
-        assert(e.status == 200)
+        assert(e.response.status_code == 200)
     else:
         #check the hdf file for status of each request
         with tables.open_file(temp_response_path, 'r') as temp:

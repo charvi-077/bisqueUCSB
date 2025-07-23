@@ -21,8 +21,8 @@ pytestmark = pytest.mark.functional
 def test_prepare_url_1(server):
     """
     """
-    check_url = 'http://bisque.ece.ucsb.edu/image/00-123456789?remap=gray&format=tiff'
-    url = 'http://bisque.ece.ucsb.edu/image/00-123456789'
+    check_url = 'http://vrl-4090.ece.ucsb.edu/image/00-123456789?remap=gray&format=tiff'
+    url = 'http://vrl-4090.ece.ucsb.edu/image/00-123456789'
     odict = OrderedDict([('remap','gray'),('format','tiff')])
     url = server.prepare_url(url, odict=odict)
     assert url == check_url
@@ -33,7 +33,7 @@ def test_prepare_url_2(server):
     """
     check_url = 'http://bisque.ece.ucsb.edu/image/00-123456789?remap=gray&format=tiff'
     url = 'http://bisque.ece.ucsb.edu/image/00-123456789'
-    url = server.prepare_url(url, remap='gray', format='tiff')
+    url = server.prepare_url(url, remap='gray', format='tiff') # Todo : test only url i assume 
     assert url == check_url
 
 @pytest.mark.unit
@@ -104,8 +104,8 @@ def test_fetchxml_2(session, stores):
         Test fetch xml and save the document to disk
     """
     user = session.config.get ('host.user')
-    filename = 'fetchxml_test_2.xml'
-    path = os.path.join(stores.results,filename)
+    filename = 'fetchxml_test_2.xml'            # TODO we have to create xml i guess 
+    path = os.path.join(stores.results,filename) # I guess this path is same as config setup path or results ! 
     path = session.fetchxml('/data_service/'+user, path=path) #fetches the user
 
     try:
@@ -196,7 +196,11 @@ def test_postblob_2(session, stores):
     filename = 'postblob_test_2.xml'
     path = os.path.join(stores.results,filename)
     resource = etree.Element ('resource', name=u'%s/%s'%(TEST_PATH, stores.files[0].name))
-    path = session.postblob(stores.files[0].location, xml=resource, path=path)
+    response_content = session.postblob(stores.files[0].location, xml=resource)
+    
+    # Save the response content to the specified path
+    with open(path, 'w') as f:
+        f.write(response_content)
 
     try:
         with open(path,'r') as f:

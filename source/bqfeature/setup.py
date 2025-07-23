@@ -33,7 +33,7 @@ setup(
     setup_requires=["hgtools"],
     include_package_data=True,
     test_suite='nose.collector',
-    tests_require=['WebTest', 'BeautifulSoup'],
+    tests_require=['WebTest', 'BeautifulSoup4'],
     package_data={'bq': ['i18n/*/LC_MESSAGES/*.mo', 'templates/*',]},
     message_extractors = {'bq': [
             ('**.py', 'python', None),
