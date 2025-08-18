@@ -31,7 +31,7 @@ xml1="""
 
 
 class TestIngest(TestController):
-    application_under_test = 'main'
+    application_under_test = 'main_without_authn'
     def login (self):
         resp = self.app.get('/auth_service/login', status=200)
         form = resp.form
@@ -48,7 +48,7 @@ class TestIngest(TestController):
 
     def test_a2_new(self):
         "new --> new blob"
-        self.login()
+        # self.login()  # Authentication disabled with main_without_authn
         ty, body = self.app.encode_multipart(params=[('https://aid_test.s3.amazonaws.com/5298377633_84dba73cb8_o.jpg 3071fc2542e3df3d12f1f6ae2d4f9928', '')], files = [])
         response = self.app.post (BLOB, params = body, content_type=ty) #extra_environ = environ)
         assert response.status == '200 OK'
