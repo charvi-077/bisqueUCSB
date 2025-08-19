@@ -177,8 +177,8 @@ class ImageServiceTestBase(unittest.TestCase):
         _mkdir(local_store_tests)
         url = posixpath.join(url_image_store, filename).encode('utf-8')
         path = os.path.join(local_store_images, filename)
-        if not os.path.exists(path):
-            urllib.urlretrieve(url, path)
+        # Force re-download for testing (remove cache check)
+        urllib.urlretrieve(url, path)
         return path
 
     @classmethod
