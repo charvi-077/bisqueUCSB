@@ -20,7 +20,7 @@ except ImportError:
 
 TEST_PATH = 'tests_%s'%urllib.parse.quote(datetime.now().strftime('%Y%m%d%H%M%S%f'))  #set a test dir on the system so not too many repeats occur
 
-# pytestmark = pytest.mark.skip("Unported tests")  # Temporarily disabled to run tests
+pytestmark = pytest.mark.skip("Unported tests")
 
 
 @pytest.fixture(scope='module')
