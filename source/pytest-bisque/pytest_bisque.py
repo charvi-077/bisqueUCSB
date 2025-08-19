@@ -43,7 +43,12 @@ def load_test_application(filename):
 
     print "pytest_bisque:load_test_application:", filename
     wsgiapp = loadapp('config:' + os.path.abspath(filename))
-    logging.config.fileConfig (filename)
+    # Only configure logging if the config file has logging sections
+    import ConfigParser
+    config = ConfigParser.ConfigParser()
+    config.read(filename)
+    if config.has_section('loggers'):
+        logging.config.fileConfig(filename)
     app = TestApp(wsgiapp)
     app.authorization = ('Basic', ('admin', 'admin'))
     #KGK Following lines are required to create database tables.. but somehow turn off logging??
