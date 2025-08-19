@@ -33,8 +33,8 @@ image_imaris_r18       = 'R18Demo.ims'
 image_zeiss_czi_rat    = '40x_RatBrain-AT-2ch-Z-wf.czi'
 
 # bioformats supported files
-image_dicom_3d         = 'MR-MONO2-8-16x-heart'
-image_dicom_2d         = 'ADNI_002_S_0295_MR_3-plane_localizer__br_raw_20060418193538653_1_S13402_I13712.dcm'
+image_dicom_3d         = 'MR-MONO2-8-16x-heart.dcm'
+image_dicom_2d         = 'your_new_file.dcm'
 
 
 

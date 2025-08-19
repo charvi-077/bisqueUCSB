@@ -24,16 +24,19 @@ from bqapi.bqfeature import *
 TEST_PATH = 'tests_%s'%urllib.quote(datetime.now().strftime('%Y%m%d%H%M%S%f'))  #set a test dir on the system so not too many repeats occur
 
 pytestmark = pytest.mark.skip("Unported tests")
-#pytestmark = pytest.mark.functional
+pytestmark = pytest.mark.functional
 
-#setup comm test
-def setUp():
-    global results_location
-    global store_local_location
-    global file1_location
-    global filename1
-    global bqsession
-    global FeatureResource
+# Global variables (will be set by fixtures)
+results_location = None
+store_local_location = None  
+file1_location = None
+filename1 = None
+bqsession = None
+FeatureResource = None
+
+@pytest.fixture(scope='module')
+def setup_bqfeature_session():
+    global results_location, store_local_location, file1_location, filename1, bqsession, FeatureResource
 
     config = ConfigParser.ConfigParser()
     config.read('setup.cfg')
@@ -44,17 +47,20 @@ def setUp():
     _mkdir(results_location)
 
     store_location = config.get('Store', 'location') or None
-    if store_location is None: raise NameError('Requre a store location to run test properly')
+    if store_location is None: 
+        raise NameError('Require a store location to run test properly')
 
     store_local_location = config.get('Store', 'local_location') or 'SampleData'
     filename1 = config.get('Store','filename1') or None
-    if filename1 is None: raise NameError('Requre an image to run test properly')
+    if filename1 is None: 
+        raise NameError('Require an image to run test properly')
     file1_location = fetch_file(filename1, store_location, store_local_location)
 
     FeatureResource = namedtuple('FeatureResource',['image','mask','gobject'])
     FeatureResource.__new__.__defaults__ = (None, None, None)
     #start session
     bqsession = BQSession().init_local(user, pwd, bisque_root=root, create_mex=False)
+    return bqsession
 
 def setup_bqfeature_fetch():
     """
@@ -107,13 +113,13 @@ def teardown_bqfeature_fetchvector():
     pass
 
 
-def test_bqfeature_fetchvector_1():
+def test_bqfeature_fetchvector_1(setup_bqfeature_session):
     """
         Test fetch vector
     """
     feature_vector = Feature().fetch_vector(bqsession, 'SimpleTestFeature', resource_list)
 
-def test_bqfeature_fetchvector_error():
+def test_bqfeature_fetchvector_error(setup_bqfeature_session):
     """
         Test fetch vector on a resource that doesnt exist
     """

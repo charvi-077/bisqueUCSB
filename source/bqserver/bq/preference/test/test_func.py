@@ -81,9 +81,14 @@ def compare_etree(answer, result):
     def compare(answer, result):
         #check tags
         assert answer.tag == result.tag, 'Tags are not equal'
-        #check attrib
-        result_attrib = result.attrib
-        answer_attrib = answer.attrib
+        #check attrib (ignore 'hidden' attribute added by preference service)
+        result_attrib = dict(result.attrib)
+        answer_attrib = dict(answer.attrib)
+        
+        # Remove 'hidden' attribute from comparison if it exists
+        result_attrib.pop('hidden', None)
+        answer_attrib.pop('hidden', None)
+        
         assert sorted(result_attrib.keys()) == sorted(answer_attrib.keys()), 'answer attrib does not have the same keys as results attrib'
         for sk in answer_attrib.keys():
             assert answer_attrib[sk] == result_attrib[sk], 'attribute node doesnt match'

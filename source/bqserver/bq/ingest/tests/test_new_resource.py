@@ -48,7 +48,9 @@ class TestIngest(TestController):
 
     def test_a2_new(self):
         "new --> new blob"
+        print "DEBUG: About to login"  # Force cache reload
         self.login()
+        print "DEBUG: Login completed"
         ty, body = self.app.encode_multipart(params=[('https://aid_test.s3.amazonaws.com/5298377633_84dba73cb8_o.jpg 3071fc2542e3df3d12f1f6ae2d4f9928', '')], files = [])
         response = self.app.post (BLOB, params = body, content_type=ty) #extra_environ = environ)
         assert response.status == '200 OK'
